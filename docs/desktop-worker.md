@@ -56,24 +56,18 @@ title: Desktop Worker - XeeNet
 
   <div class="mermaid">
   graph TB
-    subgraph Main["Main Process"]
-      WS["Worker Service<br/>Poll loop, subprocess, timeouts"]
-      PR["Python Resolver<br/>Find Python, check PyTorch"]
-      PS["Python Setup<br/>Auto-download, install"]
-      HD["Hardware Detection<br/>CPU, RAM, GPU profiling"]
-      IPC["IPC Handlers<br/>10 typed channels"]
-      STORE["Electron Store<br/>Persistent config"]
-      TRAY["System Tray<br/>Status icon, quick menu"]
-      LOG["File Logger<br/>Rotating log files"]
-    end
+    WS["Worker Service<br/>Poll loop, subprocess, timeouts"]
+    PR["Python Resolver<br/>Find Python, check PyTorch"]
+    PS["Python Setup<br/>Auto-download, install"]
+    HD["Hardware Detection<br/>CPU, RAM, GPU profiling"]
+    IPC["IPC Handlers<br/>10 typed channels"]
+    STORE["Electron Store<br/>Persistent config"]
+    TRAY["System Tray<br/>Status icon, quick menu"]
+    LOG["File Logger<br/>Rotating log files"]
 
-    subgraph Bridge["Context Bridge (IPC)"]
-      API["window.xeenet API"]
-    end
+    API["window.xeenet API<br/>(Context Bridge)"]
 
-    subgraph Renderer["Renderer Process"]
-      UI["Dark Theme UI<br/>Server URL, resource sliders<br/>Log panel, status badges"]
-    end
+    UI["Dark Theme UI<br/>Server URL, resource sliders<br/>Log panel, status badges"]
 
     WS --> PR
     WS --> PS
@@ -82,20 +76,19 @@ title: Desktop Worker - XeeNet
     IPC --> STORE
     IPC --> API
     API --> UI
+    WS --> LOG
+    TRAY --> WS
 
-    style Main fill:#1a1e2e,stroke:#3fb950,stroke-width:2px,color:#e6edf3
-    style Bridge fill:#1a1e2e,stroke:#d29922,stroke-width:2px,color:#e6edf3
-    style Renderer fill:#1a1e2e,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
-    style WS fill:#238636,stroke:#3fb950,color:#fff
-    style PR fill:#238636,stroke:#3fb950,color:#fff
-    style PS fill:#238636,stroke:#3fb950,color:#fff
-    style HD fill:#238636,stroke:#3fb950,color:#fff
-    style IPC fill:#238636,stroke:#3fb950,color:#fff
-    style STORE fill:#238636,stroke:#3fb950,color:#fff
-    style TRAY fill:#238636,stroke:#3fb950,color:#fff
-    style LOG fill:#238636,stroke:#3fb950,color:#fff
-    style API fill:#b08800,stroke:#d29922,color:#fff
-    style UI fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style WS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style PR fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style PS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style HD fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style IPC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style STORE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style TRAY fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style LOG fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style API fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style UI fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
   </div>
 
   <h3>IPC Channels</h3>

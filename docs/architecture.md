@@ -20,23 +20,17 @@ title: Architecture - XeeNet
 
   <div class="mermaid">
   graph TB
-    subgraph Portal["Research Portal"]
-      WEB["Web Dashboard<br/>(HTMX + Jinja2)"]
-    end
+    WEB["fa:fa-globe Web Dashboard<br/>(HTMX + Jinja2)"]
 
-    subgraph Server["Central Server"]
-      API["FastAPI REST API"]
-      ORC["Orchestrator Agent"]
-      ECON["Economics Agent"]
-      QUEUE["Task Queue"]
-      DB["SQLite Database"]
-    end
+    API["fa:fa-server FastAPI REST API"]
+    ORC["fa:fa-brain Orchestrator Agent"]
+    ECON["fa:fa-coins Economics Agent"]
+    QUEUE["fa:fa-list Task Queue"]
+    DB["fa:fa-database SQLite Database"]
 
-    subgraph Workers["Distributed Workers"]
-      W1["Worker 1<br/>Desktop App"]
-      W2["Worker 2<br/>Desktop App"]
-      W3["Worker N<br/>Python Agent"]
-    end
+    W1["fa:fa-desktop Worker 1<br/>Desktop App"]
+    W2["fa:fa-desktop Worker 2<br/>Desktop App"]
+    W3["fa:fa-desktop Worker N<br/>Python Agent"]
 
     WEB -->|"Briefs & Reports"| API
     API --> ORC
@@ -47,18 +41,15 @@ title: Architecture - XeeNet
     API -->|"Poll / Submit"| W2
     API -->|"Poll / Submit"| W3
 
-    style Portal fill:#1a1e2e,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
-    style Server fill:#1a1e2e,stroke:#3fb950,stroke-width:2px,color:#e6edf3
-    style Workers fill:#1a1e2e,stroke:#bc8cff,stroke-width:2px,color:#e6edf3
-    style WEB fill:#1f6feb,stroke:#58a6ff,color:#fff
-    style API fill:#238636,stroke:#3fb950,color:#fff
-    style ORC fill:#238636,stroke:#3fb950,color:#fff
-    style ECON fill:#238636,stroke:#3fb950,color:#fff
-    style QUEUE fill:#238636,stroke:#3fb950,color:#fff
-    style DB fill:#238636,stroke:#3fb950,color:#fff
-    style W1 fill:#6e40c9,stroke:#bc8cff,color:#fff
-    style W2 fill:#6e40c9,stroke:#bc8cff,color:#fff
-    style W3 fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style WEB fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style ECON fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style QUEUE fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style DB fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style W1 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style W2 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style W3 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
   </div>
 </div>
 
@@ -179,15 +170,15 @@ xeenet/
     API -->|"store"| DB["Database"]
     DB -->|"query"| DASH["Dashboard"]
 
-    style BRIEF fill:#1f6feb,stroke:#58a6ff,color:#fff
-    style ORC fill:#238636,stroke:#3fb950,color:#fff
-    style TASKS fill:#238636,stroke:#3fb950,color:#fff
-    style WORKER fill:#6e40c9,stroke:#bc8cff,color:#fff
-    style TRAIN fill:#6e40c9,stroke:#bc8cff,color:#fff
-    style METRICS fill:#b08800,stroke:#d29922,color:#fff
-    style API fill:#238636,stroke:#3fb950,color:#fff
-    style DB fill:#238636,stroke:#3fb950,color:#fff
-    style DASH fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style BRIEF fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style TASKS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style WORKER fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style TRAIN fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style METRICS fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style DB fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style DASH fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
   </div>
 
   <h3>Core Schemas</h3>

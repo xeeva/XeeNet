@@ -175,22 +175,26 @@ python train_char_lm.py --config-file config.json
   </p>
 
   <div class="mermaid">
-  gantt
-    title Dual Deadline Timeline (60s budget)
-    dateFormat X
-    axisFormat %s
+  flowchart LR
+    T1["Training Loop<br/>0s - 54s"] --> T2["Final Eval + JSON<br/>54s - 60s"]
+    T2 --> T3["Grace Period<br/>60s - 75s"]
+    T3 --> KILL["Hard Kill"]
 
-    section Script
-    Training loop           :active, t1, 0, 54
-    Final eval + JSON output :crit, t2, 54, 60
+    M1(["Soft Deadline<br/>90% = 54s"])
+    M2(["Budget Ends<br/>60s"])
+    M3(["Hard Kill<br/>75s"])
 
-    section Worker
-    Grace period            :done, t3, 60, 75
+    T1 -.- M1
+    T2 -.- M2
+    T3 -.- M3
 
-    section Deadlines
-    Soft (90% = 54s)        :milestone, m1, 54, 54
-    Budget ends (60s)       :milestone, m2, 60, 60
-    Hard kill (75s)         :milestone, m3, 75, 75
+    style T1 fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style T2 fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style T3 fill:#6b21a8,stroke:#a855f7,stroke-width:2px,color:#fff
+    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
+    style M1 fill:#0d1117,stroke:#60a5fa,stroke-width:2px,color:#60a5fa
+    style M2 fill:#0d1117,stroke:#facc15,stroke-width:2px,color:#facc15
+    style M3 fill:#0d1117,stroke:#f87171,stroke-width:2px,color:#f87171
   </div>
 
   <ol>
@@ -263,19 +267,19 @@ proc = subprocess.run(
     ERROR --> SUBMIT
     SUBMIT --> CLEAN["Clean Up Temp File"]
 
-    style START fill:#1f6feb,stroke:#58a6ff,color:#fff
-    style CHECK fill:#b08800,stroke:#d29922,color:#fff
-    style SIM fill:#6e40c9,stroke:#bc8cff,color:#fff
-    style WRITE fill:#238636,stroke:#3fb950,color:#fff
-    style SPAWN fill:#238636,stroke:#3fb950,color:#fff
-    style TIMER fill:#238636,stroke:#3fb950,color:#fff
-    style WAIT fill:#b08800,stroke:#d29922,color:#fff
-    style PARSE fill:#238636,stroke:#3fb950,color:#fff
-    style KILL fill:#da3633,stroke:#f85149,color:#fff
-    style ERROR fill:#da3633,stroke:#f85149,color:#fff
-    style SUBMIT fill:#1f6feb,stroke:#58a6ff,color:#fff
-    style CLEAN fill:#1f6feb,stroke:#58a6ff,color:#fff
-    style RESOLVE fill:#238636,stroke:#3fb950,color:#fff
+    style START fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style RESOLVE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style CHECK fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style WRITE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style SPAWN fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style TIMER fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style WAIT fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
+    style PARSE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
+    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
+    style ERROR fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
+    style SIM fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style SUBMIT fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style CLEAN fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
   </div>
 
   <p>
