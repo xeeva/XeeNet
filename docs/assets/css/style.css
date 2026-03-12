@@ -412,16 +412,30 @@ td { color: var(--colour-text-muted); }
   max-width: 100%;
 }
 
-/* Bold black text inside diagram nodes */
-.mermaid .nodeLabel { color: #000 !important; font-weight: 700 !important; }
-.mermaid .node .label { color: #000 !important; font-weight: 700 !important; }
+/* Bold black text inside diagram nodes — target every descendant including <p> */
+.mermaid .nodeLabel,
+.mermaid .nodeLabel p,
+.mermaid .nodeLabel span,
+.mermaid .nodeLabel div,
+.mermaid .nodeLabel * { color: #000 !important; font-weight: 700 !important; }
+.mermaid .node .label,
+.mermaid .node .label p,
+.mermaid .node .label * { color: #000 !important; font-weight: 700 !important; }
 .mermaid .node text { fill: #000 !important; font-weight: 700 !important; }
-.mermaid .node foreignObject div { color: #000 !important; font-weight: 700 !important; }
-.mermaid [class*="node"] span { color: #000 !important; font-weight: 700 !important; }
+.mermaid .node foreignObject,
+.mermaid .node foreignObject div,
+.mermaid .node foreignObject p,
+.mermaid .node foreignObject span,
+.mermaid .node foreignObject * { color: #000 !important; font-weight: 700 !important; }
+.mermaid [class*="node"] span,
+.mermaid [class*="node"] p { color: #000 !important; font-weight: 700 !important; }
 /* Edge labels remain light for dark background */
-.mermaid .edgeLabel { color: #e6edf3 !important; }
-.mermaid .edgeLabel .label { color: #e6edf3 !important; background: #0d1117 !important; }
-.mermaid .edgeLabel span { color: #e6edf3 !important; }
+.mermaid .edgeLabel,
+.mermaid .edgeLabel p,
+.mermaid .edgeLabel span,
+.mermaid .edgeLabel * { color: #e6edf3 !important; }
+.mermaid .edgeLabel .label,
+.mermaid .edgeLabel .label p { color: #e6edf3 !important; background: #0d1117 !important; }
 .mermaid .edgePath .path { stroke: #79c0ff !important; stroke-width: 2px !important; }
 .mermaid .arrowheadPath { fill: #79c0ff !important; stroke: #79c0ff !important; }
 .mermaid marker path { fill: #79c0ff !important; }
