@@ -13,35 +13,33 @@
   <script>
     mermaid.initialize({
       startOnLoad: true,
-      theme: 'dark',
+      theme: 'base',
       themeVariables: {
-        primaryColor: '#2d6abf',
+        primaryColor: '#16a34a',
         primaryTextColor: '#000000',
-        primaryBorderColor: '#58a6ff',
+        primaryBorderColor: '#4ade80',
         lineColor: '#79c0ff',
-        secondaryColor: '#2ea043',
-        tertiaryColor: '#1c2129',
+        secondaryColor: '#2563eb',
+        secondaryTextColor: '#000000',
+        secondaryBorderColor: '#60a5fa',
+        tertiaryColor: '#9333ea',
+        tertiaryTextColor: '#000000',
+        tertiaryBorderColor: '#c084fc',
         noteTextColor: '#000000',
-        noteBkgColor: '#1c2129',
+        noteBkgColor: '#ca8a04',
         fontFamily: 'Inter, sans-serif',
         fontSize: '14px',
+        background: '#0d1117',
+        mainBkg: '#16a34a',
+        nodeBorder: '#4ade80',
+        nodeTextColor: '#000000',
         edgeLabelBackground: '#0d1117',
         labelTextColor: '#e6edf3',
         clusterBkg: '#11151c',
         clusterBorder: '#58a6ff',
-        titleColor: '#e6edf3',
-        nodeTextColor: '#000000',
-        actorTextColor: '#000000',
-        sectionBkgColor: '#1c2129',
-        sectionBkgColor2: '#161b22',
-        taskTextColor: '#000000',
-        taskTextOutsideColor: '#e6edf3',
-        gridColor: '#30363d',
-        doneTaskBkgColor: '#238636',
-        activeTaskBkgColor: '#1f6feb',
-        critBkgColor: '#d29922',
-        taskBorderColor: '#58a6ff'
-      }
+        titleColor: '#e6edf3'
+      },
+      themeCSS: '.nodeLabel { color: #000 !important; font-weight: 700 !important; } .label { font-weight: 700 !important; } .edgeLabel { color: #e6edf3 !important; } .edgeLabel .label { background: #0d1117 !important; color: #e6edf3 !important; font-weight: 400 !important; }'
     });
   </script>
 </head>
