@@ -166,27 +166,28 @@ title: Training Pipeline - XeeNet
     Training tasks use a two-layer timeout system to guarantee termination:
   </p>
 
-  <div class="mermaid">
-  flowchart LR
-    T1["Training Loop<br/>0s - 54s"] --> T2["Final Eval + JSON<br/>54s - 60s"]
-    T2 --> T3["Grace Period<br/>60s - 75s"]
-    T3 --> KILL["Hard Kill"]
-
-    M1(["Soft Deadline<br/>90% = 54s"])
-    M2(["Budget Ends<br/>60s"])
-    M3(["Hard Kill<br/>75s"])
-
-    T1 -.- M1
-    T2 -.- M2
-    T3 -.- M3
-
-    style T1 fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
-    style T2 fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
-    style T3 fill:#6b21a8,stroke:#a855f7,stroke-width:2px,color:#000
-    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#000
-    style M1 fill:#0d1117,stroke:#60a5fa,stroke-width:2px,color:#60a5fa
-    style M2 fill:#0d1117,stroke:#facc15,stroke-width:2px,color:#facc15
-    style M3 fill:#0d1117,stroke:#f87171,stroke-width:2px,color:#f87171
+  <div class="pipeline-flow">
+    <div class="pipeline-step" style="background:#2563eb;border-color:#60a5fa;color:#fff;">
+      <strong>Training Loop</strong><br>0s &ndash; 54s
+    </div>
+    <span class="pipeline-arrow">&rarr;</span>
+    <span style="color:#60a5fa;font-size:0.78rem;">Soft deadline (90%)</span>
+    <span class="pipeline-arrow">&rarr;</span>
+    <div class="pipeline-step" style="background:#ca8a04;border-color:#facc15;color:#fff;">
+      <strong>Final Eval + JSON</strong><br>54s &ndash; 60s
+    </div>
+    <span class="pipeline-arrow">&rarr;</span>
+    <span style="color:#facc15;font-size:0.78rem;">Budget ends</span>
+    <span class="pipeline-arrow">&rarr;</span>
+    <div class="pipeline-step" style="background:#6b21a8;border-color:#a855f7;color:#fff;">
+      <strong>Grace Period</strong><br>60s &ndash; 75s
+    </div>
+    <span class="pipeline-arrow">&rarr;</span>
+    <span style="color:#f87171;font-size:0.78rem;">75s</span>
+    <span class="pipeline-arrow">&rarr;</span>
+    <div class="pipeline-step" style="background:#dc2626;border-color:#f87171;color:#fff;">
+      <strong>Hard Kill</strong>
+    </div>
   </div>
 
   <ol>
