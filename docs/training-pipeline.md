@@ -138,28 +138,20 @@ title: Training Pipeline - XeeNet
   </ul>
 
   <h3>Interface</h3>
-
-```
-python train_char_lm.py --config-file config.json
-```
-
+  <pre><code>python train_char_lm.py --config-file config.json</code></pre>
   <p>
     The config file is a flat JSON object with all hyperparameters. The script reads it,
     trains the model, evaluates periodically, and outputs a single JSON line to stdout
     on completion:
   </p>
-
-```json
-{
+  <pre><code>{
   "val_bpb": 3.5906,
   "train_loss": 2.1847,
   "steps_completed": 1531,
   "wall_time_seconds": 9.02,
   "device_used": "cpu",
   "model_params": 198721
-}
-```
-
+}</code></pre>
   <p>
     All other logging goes to stderr. This separation is critical: the worker parses
     stdout for the result JSON, while stderr is available for debugging.
@@ -226,8 +218,7 @@ python train_char_lm.py --config-file config.json
     if a task fails.</li>
   </ul>
 
-```python
-# Worker writes config to temp file
+  <pre><code># Worker writes config to temp file
 config = {
     "lr": 0.003, "lr_schedule": "cosine",
     "n_layers": 4, "n_heads": 4, "d_model": 128,
@@ -241,8 +232,7 @@ with open(tmp_path, "w") as f:
 proc = subprocess.run(
     [python, "train_char_lm.py", "--config-file", tmp_path],
     capture_output=True, timeout=75
-)
-```
+)</code></pre>
 </div>
 
 <div class="divider"></div>

@@ -55,9 +55,7 @@ title: Architecture - XeeNet
 
 <div class="section">
   <h2>Directory Structure</h2>
-
-```
-xeenet/
+  <pre><code>xeenet/
 ├── agents/                          # Agent definitions
 │   ├── base.py                      # BaseAgent ABC
 │   ├── orchestrator/                # Decomposes research goals into tasks
@@ -85,7 +83,7 @@ xeenet/
 │   │   └── templates/               # ~15 Jinja2 templates
 │   ├── db/                          # Async SQLAlchemy + SQLite
 │   ├── schemas.py                   # Pydantic data models
-│   └── orchestration.py             # Brief -> campaign -> tasks pipeline
+│   └── orchestration.py             # Brief -&gt; campaign -&gt; tasks pipeline
 │
 ├── experiments/
 │   └── train_char_lm.py             # Self-contained training script
@@ -98,8 +96,7 @@ xeenet/
 │
 ├── config/                          # Settings (Pydantic + YAML)
 ├── tests/                           # 110 tests across 8 files
-└── static/                          # CSS, JS for dashboard
-```
+└── static/                          # CSS, JS for dashboard</code></pre>
 </div>
 
 <div class="section">
