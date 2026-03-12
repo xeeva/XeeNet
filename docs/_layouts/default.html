@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="{{ '/' | relative_url }}" class="nav-brand">
+        <span class="nav-logo">&#9670;</span> XeeNet
+      </a>
+      <div class="nav-links">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/architecture' | relative_url }}">Architecture</a>
+        <a href="{{ '/training-pipeline' | relative_url }}">Training Pipeline</a>
+        <a href="{{ '/desktop-worker' | relative_url }}">Desktop Worker</a>
+        <a href="{{ '/dashboard' | relative_url }}">Dashboard</a>
+        <a href="{{ '/roadmap' | relative_url }}">Roadmap</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {{ content }}
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>&copy; 2026 XeeNet Project. Distributed AI Research at Scale.</p>
+      <p class="footer-links">
+        <a href="https://github.com/xeeva/XeeNet">GitHub</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

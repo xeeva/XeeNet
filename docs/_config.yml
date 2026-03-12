@@ -1,0 +1,10 @@
+title: XeeNet
+description: Distributed AI Research at Scale — An Open Platform for Autonomous ML Experimentation
+baseurl: ""
+url: "https://xeeva.github.io/XeeNet"
+theme: null
+plugins: []
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
