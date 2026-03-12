@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Dashboard — XeeNet
+title: Dashboard - XeeNet
 ---
 
 <div class="page-header">
@@ -19,100 +19,95 @@ title: Dashboard — XeeNet
     across campaigns. Built with HTMX for real-time updates, Jinja2 templates, and Pico CSS
     for a clean, responsive interface.
   </p>
-  <p>
-    The dashboard runs as part of the FastAPI backend — no separate frontend build step,
-    no JavaScript framework, no npm. Just server-rendered HTML with HTMX for interactivity.
-  </p>
-</div>
 
-<div class="divider"></div>
-
-<div class="section">
-  <h2>Dashboard Features</h2>
-
-  <div class="card-grid">
-    <div class="card">
-      <span class="card-icon">&#128209;</span>
-      <h3>Brief Management</h3>
-      <p>
-        Create, view, and manage research briefs. Each brief defines an experiment campaign
-        with a title, description, number of tasks, and time budget per task. The orchestrator
-        automatically decomposes briefs into concrete tasks.
-      </p>
-    </div>
-    <div class="card">
-      <span class="card-icon">&#128202;</span>
-      <h3>Campaign Results</h3>
-      <p>
-        View aggregated results for each campaign: best val_bpb, mean/std metrics,
-        completion rate, and per-task breakdowns. The best-performing hyperparameter
-        configuration is highlighted with its full parameter set.
-      </p>
-    </div>
-    <div class="card">
-      <span class="card-icon">&#9881;</span>
-      <h3>Worker Monitoring</h3>
-      <p>
-        Track registered workers, their hardware profiles (CPU, RAM, GPU), current
-        status (idle/working/offline), and historical contribution metrics. Credits
-        earned per worker are displayed.
-      </p>
-    </div>
-    <div class="card">
-      <span class="card-icon">&#128200;</span>
-      <h3>Auto-Refreshing Stats</h3>
-      <p>
-        Platform statistics update automatically via HTMX polling — no manual refresh
-        needed. Active tasks, completed experiments, connected workers, and credit
-        circulation are all live.
-      </p>
-    </div>
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-overview.png' | relative_url }}" alt="Dashboard overview showing workers, tasks, families, briefs, and total credits">
+    <div class="screenshot-caption">Dashboard home: live platform stats showing 2 workers online, 68 total tasks, and 538 credits in circulation</div>
   </div>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
-  <h2>Brief → Results Flow</h2>
+  <h2>Research Briefs</h2>
   <p>
-    The dashboard reflects the full lifecycle of an experiment campaign:
+    Research briefs are the starting point for every experiment campaign. A brief defines
+    the research goal, compute budget, and target hardware profile. The orchestrator
+    automatically decomposes each brief into concrete tasks with unique hyperparameter
+    configurations.
   </p>
 
-  <h3>1. Create a Brief</h3>
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-briefs.png' | relative_url }}" alt="Research briefs list showing experiment campaigns">
+    <div class="screenshot-caption">Briefs list: each brief describes an experiment campaign with goal, budget, and hardware requirements</div>
+  </div>
+
+  <h3>Campaign Results</h3>
   <p>
-    Researchers fill in a brief form specifying the research goal. The orchestrator
-    processes it and generates a family of tasks — each with a unique hyperparameter
-    configuration sampled from the search space.
+    The brief detail page shows the full lifecycle of a campaign: from the research goal
+    through to aggregated results. Key metrics include best val_bpb, mean/standard deviation
+    across all runs, and the winning hyperparameter configuration.
   </p>
 
-  <h3>2. Monitor Progress</h3>
-  <p>
-    The brief detail page shows:
-  </p>
-  <ul>
-    <li><strong>Overall completion:</strong> X/Y tasks completed</li>
-    <li><strong>Task list:</strong> each task with its status, assigned worker, and result metrics</li>
-    <li><strong>Live updates:</strong> tasks transition from queued → assigned → completed as workers report in</li>
-  </ul>
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-brief-detail.png' | relative_url }}" alt="Brief detail page showing campaign results with best val_bpb, configuration, and task list">
+    <div class="screenshot-caption">Campaign results: 10/10 tasks completed, best val_bpb 3.5705 with full hyperparameter config and per-task breakdown</div>
+  </div>
+</div>
 
-  <h3>3. Analyse Results</h3>
-  <p>
-    Once tasks complete, the dashboard displays:
-  </p>
-  <ul>
-    <li><strong>Best configuration:</strong> the hyperparameter set that achieved the lowest val_bpb</li>
-    <li><strong>Statistical summary:</strong> mean, standard deviation, min/max across all tasks</li>
-    <li><strong>Per-task detail:</strong> individual metrics for each config, enabling comparison</li>
-  </ul>
+<div class="divider"></div>
 
-  <div class="callout">
-    <div class="callout-title">Real Results Example</div>
-    <p>
-      A 10-task campaign on TinyShakespeare produced val_bpb values ranging from 3.57 to 4.89
-      with a standard deviation of 0.56. The best configuration used a 4-layer transformer with
-      cosine learning rate schedule at lr=0.003, demonstrating meaningful variation across the
-      hyperparameter search space.
-    </p>
+<div class="section">
+  <h2>Experiment Families</h2>
+  <p>
+    Each brief generates an experiment family (campaign) containing all related tasks.
+    Families track the metric being optimised, completion status, and linked brief.
+  </p>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-families.png' | relative_url }}" alt="Experiment families list showing campaign status">
+    <div class="screenshot-caption">Families view: campaigns linked to briefs with val_bpb metric tracking and completion status</div>
+  </div>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-family-detail.png' | relative_url }}" alt="Family detail showing linked brief, metric, resources, and task list">
+    <div class="screenshot-caption">Family detail: linked brief, minimum resource requirements, and all 10 tasks with seed and time budget assignments</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h2>Task Management</h2>
+  <p>
+    Tasks are the atomic units of work. Each task represents a single training run with
+    a specific hyperparameter configuration, time budget, and seed. The tasks view shows
+    all tasks across all campaigns with their completion status.
+  </p>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-tasks.png' | relative_url }}" alt="Tasks list showing all training tasks with completion status">
+    <div class="screenshot-caption">Tasks list: all training tasks across campaigns, showing type, family, priority, assigned worker, and completion time</div>
+  </div>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-task-detail.png' | relative_url }}" alt="Task detail showing hyperparameter config, resource requirements, and training result with val_bpb metric">
+    <div class="screenshot-caption">Task detail: hyperparameter config, resource requirements, and real training result (val_bpb: 3.8885, train_loss: 1.7409)</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h2>Worker Monitoring</h2>
+  <p>
+    The workers page tracks all registered nodes in the network. Each worker reports its
+    hardware profile (CPU cores, RAM, GPU model and VRAM), platform, and heartbeat status.
+  </p>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-workers.png' | relative_url }}" alt="Workers list showing two online workers with hardware profiles">
+    <div class="screenshot-caption">Connected workers: Intel Arc Pro 140T (16GB) and NVIDIA GeForce RTX 3080, both online on Windows</div>
   </div>
 </div>
 
@@ -152,10 +147,6 @@ title: Dashboard — XeeNet
         <td>Campaign results, best config, task breakdown</td>
       </tr>
       <tr>
-        <td><code>brief_form.html</code></td>
-        <td>Create/edit brief form</td>
-      </tr>
-      <tr>
         <td><code>workers_list.html</code></td>
         <td>Connected workers and hardware profiles</td>
       </tr>
@@ -170,19 +161,11 @@ title: Dashboard — XeeNet
     </tbody>
   </table>
 
-  <h3>API Integration</h3>
-  <p>
-    Dashboard views call the same REST API that workers and external clients use.
-    The dashboard router (<code>services/api/dashboard/</code>) renders HTML responses
-    while the API routers (<code>services/api/routers/</code>) return JSON. This means
-    any dashboard feature can also be accessed programmatically.
-  </p>
-
   <h3>No Build Step</h3>
   <p>
     The dashboard is pure server-side rendering. Static CSS and minimal JavaScript
     live in <code>static/</code>. HTMX handles dynamic updates via HTML-over-the-wire.
-    This eliminates the entire frontend build pipeline — no webpack, no bundler,
+    This eliminates the entire frontend build pipeline: no webpack, no bundler,
     no node_modules. Run <code>uvicorn services.api.main:app</code> and the dashboard
     is ready.
   </p>

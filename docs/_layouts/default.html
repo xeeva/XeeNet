@@ -8,36 +8,99 @@
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#e6edf3',
+        primaryBorderColor: '#58a6ff',
+        lineColor: '#58a6ff',
+        secondaryColor: '#238636',
+        tertiaryColor: '#161b22',
+        noteTextColor: '#e6edf3',
+        noteBkgColor: '#1c2129',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        edgeLabelBackground: '#161b22',
+        clusterBkg: '#161b22',
+        clusterBorder: '#30363d'
+      }
+    });
+  </script>
 </head>
 <body>
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="{{ '/' | relative_url }}" class="nav-brand">
-        <span class="nav-logo">&#9670;</span> XeeNet
+  <!-- Mobile menu toggle -->
+  <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+  <!-- Sidebar navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="{{ '/' | relative_url }}" class="sidebar-brand">
+        <span class="sidebar-logo">&#9670;</span> XeeNet
       </a>
-      <div class="nav-links">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <a href="{{ '/architecture' | relative_url }}">Architecture</a>
-        <a href="{{ '/training-pipeline' | relative_url }}">Training Pipeline</a>
-        <a href="{{ '/desktop-worker' | relative_url }}">Desktop Worker</a>
-        <a href="{{ '/dashboard' | relative_url }}">Dashboard</a>
-        <a href="{{ '/roadmap' | relative_url }}">Roadmap</a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <span class="sidebar-section-title">Overview</span>
+        <a href="{{ '/' | relative_url }}" class="sidebar-link {% if page.url == '/' %}active{% endif %}">
+          <span class="sidebar-icon">&#127968;</span> Home
+        </a>
+        <a href="{{ '/vision' | relative_url }}" class="sidebar-link {% if page.url contains '/vision' %}active{% endif %}">
+          <span class="sidebar-icon">&#127758;</span> Vision & Market
+        </a>
       </div>
-    </div>
-  </nav>
+      <div class="sidebar-section">
+        <span class="sidebar-section-title">Platform</span>
+        <a href="{{ '/architecture' | relative_url }}" class="sidebar-link {% if page.url contains '/architecture' %}active{% endif %}">
+          <span class="sidebar-icon">&#9881;</span> Architecture
+        </a>
+        <a href="{{ '/training-pipeline' | relative_url }}" class="sidebar-link {% if page.url contains '/training-pipeline' %}active{% endif %}">
+          <span class="sidebar-icon">&#128300;</span> Training Pipeline
+        </a>
+        <a href="{{ '/desktop-worker' | relative_url }}" class="sidebar-link {% if page.url contains '/desktop-worker' %}active{% endif %}">
+          <span class="sidebar-icon">&#128187;</span> Desktop Worker
+        </a>
+        <a href="{{ '/dashboard' | relative_url }}" class="sidebar-link {% if page.url contains '/dashboard' %}active{% endif %}">
+          <span class="sidebar-icon">&#128202;</span> Dashboard
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <span class="sidebar-section-title">Future</span>
+        <a href="{{ '/roadmap' | relative_url }}" class="sidebar-link {% if page.url contains '/roadmap' %}active{% endif %}">
+          <span class="sidebar-icon">&#128640;</span> Roadmap
+        </a>
+      </div>
+      <div class="sidebar-section sidebar-footer-section">
+        <a href="https://github.com/xeeva/XeeNet" class="sidebar-link sidebar-external">
+          <span class="sidebar-icon">&#128279;</span> GitHub
+        </a>
+      </div>
+    </nav>
+  </aside>
 
-  <main>
-    {{ content }}
-  </main>
+  <!-- Mobile top bar -->
+  <header class="mobile-header">
+    <label for="sidebar-toggle" class="mobile-menu-btn">&#9776;</label>
+    <a href="{{ '/' | relative_url }}" class="mobile-brand">
+      <span class="sidebar-logo">&#9670;</span> XeeNet
+    </a>
+  </header>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <p>&copy; 2026 XeeNet Project. Distributed AI Research at Scale.</p>
-      <p class="footer-links">
-        <a href="https://github.com/xeeva/XeeNet">GitHub</a>
-      </p>
-    </div>
-  </footer>
+  <!-- Overlay for mobile menu -->
+  <label for="sidebar-toggle" class="sidebar-overlay"></label>
+
+  <!-- Main content -->
+  <div class="main-wrapper">
+    <main class="main-content">
+      {{ content }}
+    </main>
+    <footer class="footer">
+      <p>&copy; 2026 David Summers. All rights reserved.</p>
+    </footer>
+  </div>
 </body>
 </html>

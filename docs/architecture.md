@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Architecture — XeeNet
+title: Architecture - XeeNet
 ---
 
 <div class="page-header">
@@ -14,29 +14,51 @@ title: Architecture — XeeNet
   <h2>System Overview</h2>
   <p>
     XeeNet follows a hub-and-spoke model. A central server manages experiment campaigns,
-    task queues, and results aggregation. Worker nodes — desktop applications running on
-    volunteer machines — poll for tasks, execute training runs, and report metrics back.
+    task queues, and results aggregation. Worker nodes (desktop applications running on
+    volunteer machines) poll for tasks, execute training runs, and report metrics back.
   </p>
 
-  <div class="diagram">
-                         ┌──────────────────────┐
-                         │   Research Portal     │
-                         │   (Web Dashboard)     │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-┌────────────┐    ┌──────────────────────────────────┐    ┌────────────┐
-│  Worker 1  │◄──►│         Central Server            │◄──►│  Worker N  │
-│  (Desktop) │    │                                    │    │  (Desktop) │
-└────────────┘    │  ┌────────────┐  ┌─────────────┐  │    └────────────┘
-                  │  │Orchestrator│  │  Task Queue  │  │
-     ...          │  │   Agent    │  │              │  │         ...
-                  │  └────────────┘  └─────────────┘  │
-┌────────────┐    │  ┌────────────┐  ┌─────────────┐  │    ┌────────────┐
-│  Worker 2  │◄──►│  │  Economics │  │  Results DB  │  │◄──►│  Worker M  │
-│  (Python)  │    │  │   Agent    │  │              │  │    │  (Desktop) │
-└────────────┘    │  └────────────┘  └─────────────┘  │    └────────────┘
-                  └──────────────────────────────────┘
+  <div class="mermaid">
+  graph TB
+    subgraph Portal["Research Portal"]
+      WEB["Web Dashboard<br/>(HTMX + Jinja2)"]
+    end
+
+    subgraph Server["Central Server"]
+      API["FastAPI REST API"]
+      ORC["Orchestrator Agent"]
+      ECON["Economics Agent"]
+      QUEUE["Task Queue"]
+      DB["SQLite Database"]
+    end
+
+    subgraph Workers["Distributed Workers"]
+      W1["Worker 1<br/>Desktop App"]
+      W2["Worker 2<br/>Desktop App"]
+      W3["Worker N<br/>Python Agent"]
+    end
+
+    WEB -->|"Briefs & Reports"| API
+    API --> ORC
+    API --> ECON
+    ORC -->|"Generate Tasks"| QUEUE
+    QUEUE --> DB
+    API -->|"Poll / Submit"| W1
+    API -->|"Poll / Submit"| W2
+    API -->|"Poll / Submit"| W3
+
+    style Portal fill:#1a1e2e,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
+    style Server fill:#1a1e2e,stroke:#3fb950,stroke-width:2px,color:#e6edf3
+    style Workers fill:#1a1e2e,stroke:#bc8cff,stroke-width:2px,color:#e6edf3
+    style WEB fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style API fill:#238636,stroke:#3fb950,color:#fff
+    style ORC fill:#238636,stroke:#3fb950,color:#fff
+    style ECON fill:#238636,stroke:#3fb950,color:#fff
+    style QUEUE fill:#238636,stroke:#3fb950,color:#fff
+    style DB fill:#238636,stroke:#3fb950,color:#fff
+    style W1 fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style W2 fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style W3 fill:#6e40c9,stroke:#bc8cff,color:#fff
   </div>
 </div>
 
@@ -72,7 +94,7 @@ xeenet/
 │   │   └── templates/               # ~15 Jinja2 templates
 │   ├── db/                          # Async SQLAlchemy + SQLite
 │   ├── schemas.py                   # Pydantic data models
-│   └── orchestration.py             # Brief → campaign → tasks pipeline
+│   └── orchestration.py             # Brief -> campaign -> tasks pipeline
 │
 ├── experiments/
 │   └── train_char_lm.py             # Self-contained training script
@@ -93,8 +115,7 @@ xeenet/
   <h2>The Four Agents</h2>
   <p>
     XeeNet uses a multi-agent architecture. Each agent has a defined role, a prompt
-    specification, and a Python implementation. All agents share a cross-agent memory
-    via <code>LessonsLearned.md</code>.
+    specification, and a Python implementation.
   </p>
 
   <div class="card-grid">
@@ -122,7 +143,7 @@ xeenet/
       <h3>Portal Assistant</h3>
       <p>
         Conversational interface for researchers. Helps formulate research briefs, explains
-        results, and generates reports. Designed for progressive disclosure — high-level
+        results, and generates reports. Designed for progressive disclosure: high-level
         summaries first, drill-down on request.
       </p>
     </div>
@@ -132,7 +153,7 @@ xeenet/
       <p>
         Manages the credits marketplace. Meters compute contributions from workers,
         calculates costs for researchers, detects fraudulent results, and handles
-        budget planning. Workers are semi-trusted — the agent accounts for adversarial behaviour.
+        budget planning. Workers are semi-trusted and the agent accounts for adversarial behaviour.
       </p>
     </div>
   </div>
@@ -146,6 +167,28 @@ xeenet/
     TypeScript (<code>desktop/src/shared/types.ts</code>), ensuring consistency across
     the backend API and Electron workers.
   </p>
+
+  <div class="mermaid">
+  flowchart LR
+    BRIEF["Research Brief"] -->|"decompose"| ORC["Orchestrator"]
+    ORC -->|"generate configs"| TASKS["Task Queue"]
+    TASKS -->|"poll"| WORKER["Worker Node"]
+    WORKER -->|"spawn"| TRAIN["Training Subprocess"]
+    TRAIN -->|"JSON stdout"| METRICS["Metrics"]
+    METRICS -->|"submit"| API["REST API"]
+    API -->|"store"| DB["Database"]
+    DB -->|"query"| DASH["Dashboard"]
+
+    style BRIEF fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style ORC fill:#238636,stroke:#3fb950,color:#fff
+    style TASKS fill:#238636,stroke:#3fb950,color:#fff
+    style WORKER fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style TRAIN fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style METRICS fill:#b08800,stroke:#d29922,color:#fff
+    style API fill:#238636,stroke:#3fb950,color:#fff
+    style DB fill:#238636,stroke:#3fb950,color:#fff
+    style DASH fill:#1f6feb,stroke:#58a6ff,color:#fff
+  </div>
 
   <h3>Core Schemas</h3>
   <table>
@@ -193,32 +236,13 @@ xeenet/
     router groups:
   </p>
   <ul>
-    <li><strong>Orchestrator routes</strong> — Create briefs, list campaigns, view task status</li>
-    <li><strong>Worker routes</strong> — Poll for tasks, submit results, register workers</li>
-    <li><strong>Portal routes</strong> — Researcher queries, report generation</li>
+    <li><strong>Orchestrator routes</strong>: Create briefs, list campaigns, view task status</li>
+    <li><strong>Worker routes</strong>: Poll for tasks, submit results, register workers</li>
+    <li><strong>Portal routes</strong>: Researcher queries, report generation</li>
   </ul>
   <p>
     The database is async SQLAlchemy with SQLite (via aiosqlite), initialised at app
-    startup through FastAPI's lifespan context manager. This keeps the deployment simple —
+    startup through FastAPI's lifespan context manager. This keeps the deployment simple:
     no external database server required.
   </p>
-</div>
-
-<div class="section">
-  <h2>Shared Memory: LessonsLearned.md</h2>
-  <p>
-    All agents read from and write to a central <code>LessonsLearned.md</code> file. This
-    acts as cross-agent persistent memory — recording non-trivial lessons from failed
-    experiments, scaling issues, and architectural decisions. Each entry follows a structured
-    template with Context, Observation, Lesson, and Recommendations sections.
-  </p>
-  <div class="callout">
-    <div class="callout-title">Why not a database?</div>
-    <p>
-      A Markdown file is human-readable, version-controlled, and trivially portable.
-      Agents can grep it, append to it, and review it in context. For the current
-      scale, this is simpler and more transparent than a structured database — and
-      it follows the autoresearch philosophy of keeping things minimal.
-    </p>
-  </div>
 </div>

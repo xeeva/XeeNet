@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Training Pipeline — XeeNet
+title: Training Pipeline - XeeNet
 ---
 
 <div class="page-header">
   <h1>Real ML Training Pipeline</h1>
   <p class="lead">
-    From hyperparameter search space to real val_bpb metrics — how XeeNet runs
+    From hyperparameter search space to real val_bpb metrics: how XeeNet runs
     actual PyTorch training across distributed workers.
   </p>
 </div>
@@ -16,8 +16,7 @@ title: Training Pipeline — XeeNet
   <p>
     XeeNet's training pipeline follows the <strong>autoresearch pattern</strong> pioneered
     by Andrej Karpathy: every experiment is a self-contained script that runs for a fixed
-    compute budget and reports a single comparable metric. This contract makes experiments
-    composable, reproducible, and distributable.
+    compute budget and reports a single comparable metric.
   </p>
 
   <div class="card-grid">
@@ -40,7 +39,7 @@ title: Training Pipeline — XeeNet
     <div class="card">
       <h3>Single Comparable Metric</h3>
       <p>
-        Every task reports <code>val_bpb</code> (validation bits-per-byte) — a
+        Every task reports <code>val_bpb</code> (validation bits-per-byte), a
         normalised measure of model quality. Lower is better. Different architectures
         and hyperparameters are directly comparable on this metric.
       </p>
@@ -113,9 +112,9 @@ title: Training Pipeline — XeeNet
   <div class="callout">
     <div class="callout-title">Reproducibility</div>
     <p>
-      The generator uses <code>random.Random(seed)</code> — Python's Mersenne Twister
-      with an explicit seed. Given the same seed, the same config is produced every time,
-      on every platform. The training script also seeds PyTorch and Python's random module.
+      The generator uses <code>random.Random(seed)</code> for deterministic sampling.
+      Given the same seed, the same config is produced every time, on every platform.
+      The training script also seeds PyTorch and Python's random module.
     </p>
   </div>
 </div>
@@ -126,14 +125,14 @@ title: Training Pipeline — XeeNet
   <h2>The Training Script</h2>
   <p>
     <code>experiments/train_char_lm.py</code> is a ~250-line self-contained training script.
-    It implements a character-level GPT — a pre-norm decoder-only transformer with causal masking.
+    It implements a character-level GPT: a pre-norm decoder-only transformer with causal masking.
   </p>
 
   <h3>Architecture</h3>
   <ul>
     <li><strong>Tokenisation:</strong> Character-level (~65 vocabulary tokens from TinyShakespeare)</li>
     <li><strong>Model:</strong> Pre-norm decoder-only transformer with causal attention masking</li>
-    <li><strong>Layers:</strong> Configurable depth (2–6 layers), width (64–256 d_model), and heads (2–4)</li>
+    <li><strong>Layers:</strong> Configurable depth (2-6 layers), width (64-256 d_model), and heads (2-4)</li>
     <li><strong>Parameters:</strong> ~50K to ~2M depending on configuration</li>
     <li><strong>Dataset:</strong> TinyShakespeare (~1MB, auto-downloaded and cached)</li>
   </ul>
@@ -162,14 +161,38 @@ python train_char_lm.py --config-file config.json
 ```
 
   <p>
-    All other logging goes to stderr. This separation is critical — the worker parses
+    All other logging goes to stderr. This separation is critical: the worker parses
     stdout for the result JSON, while stderr is available for debugging.
   </p>
+</div>
 
-  <h3>Dual Deadline Pattern</h3>
+<div class="divider"></div>
+
+<div class="section">
+  <h2>Dual Deadline Pattern</h2>
   <p>
-    Training tasks use a two-layer timeout system:
+    Training tasks use a two-layer timeout system to guarantee termination:
   </p>
+
+  <div class="mermaid">
+  gantt
+    title Dual Deadline Timeline (60s budget)
+    dateFormat X
+    axisFormat %s
+
+    section Script
+    Training loop           :active, t1, 0, 54
+    Final eval + JSON output :crit, t2, 54, 60
+
+    section Worker
+    Grace period            :done, t3, 60, 75
+
+    section Deadlines
+    Soft (90% = 54s)        :milestone, m1, 54, 54
+    Budget ends (60s)       :milestone, m2, 60, 60
+    Hard kill (75s)         :milestone, m3, 75, 75
+  </div>
+
   <ol>
     <li><strong>Soft deadline (in-script):</strong> The training loop checks elapsed time
     each step. At 90% of the time budget, it stops training, runs a final evaluation,
@@ -178,18 +201,6 @@ python train_char_lm.py --config-file config.json
     <code>time_budget + 15 seconds</code>. If the script hasn't exited by then,
     the process is terminated. This catches hangs, infinite loops, and GPU driver issues.</li>
   </ol>
-
-  <div class="diagram">
-  Time budget: 60 seconds
-
-  0s          54s              60s      75s
-  ├───────────┼────────────────┼────────┤
-  │  Training │  Final eval    │  Grace │
-  │  loop     │  + JSON output │  period│
-  │           │                │        │
-  │           ▲ Soft deadline  ▲ Budget ▲ Hard kill
-  │           │ (90% = 54s)    │ ends   │ (budget + 15s)
-  </div>
 </div>
 
 <div class="divider"></div>
@@ -201,7 +212,7 @@ python train_char_lm.py --config-file config.json
     not command-line arguments. This is a deliberate design choice:
   </p>
   <ul>
-    <li><strong>No shell escaping issues:</strong> Windows <code>cmd.exe</code> and PowerShell
+    <li><strong>No shell escaping issues:</strong> Windows cmd.exe and PowerShell
     handle quotes differently. JSON in a file avoids all quoting problems.</li>
     <li><strong>Arbitrary complexity:</strong> Nested configs, arrays, and special characters
     work without serialisation concerns.</li>
@@ -234,9 +245,42 @@ proc = subprocess.run(
 
 <div class="section">
   <h2>Worker Execution Flow</h2>
+
+  <div class="mermaid">
+  flowchart TD
+    START["Task Received"] --> RESOLVE["Resolve Script Path"]
+    RESOLVE --> CHECK{"PyTorch<br/>Available?"}
+    CHECK -->|"Yes"| WRITE["Write Config to Temp JSON"]
+    CHECK -->|"No"| SIM["Simulated Fallback<br/>(Seeded PRNG)"]
+    WRITE --> SPAWN["Spawn Python Subprocess"]
+    SPAWN --> TIMER["Start Hard Kill Timer<br/>(budget + 15s)"]
+    TIMER --> WAIT{"Process<br/>Exited?"}
+    WAIT -->|"Yes"| PARSE["Parse JSON from stdout"]
+    WAIT -->|"Timeout"| KILL["Kill Process"]
+    KILL --> ERROR["Error Result"]
+    PARSE --> SUBMIT["Submit Result to Server"]
+    SIM --> SUBMIT
+    ERROR --> SUBMIT
+    SUBMIT --> CLEAN["Clean Up Temp File"]
+
+    style START fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style CHECK fill:#b08800,stroke:#d29922,color:#fff
+    style SIM fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style WRITE fill:#238636,stroke:#3fb950,color:#fff
+    style SPAWN fill:#238636,stroke:#3fb950,color:#fff
+    style TIMER fill:#238636,stroke:#3fb950,color:#fff
+    style WAIT fill:#b08800,stroke:#d29922,color:#fff
+    style PARSE fill:#238636,stroke:#3fb950,color:#fff
+    style KILL fill:#da3633,stroke:#f85149,color:#fff
+    style ERROR fill:#da3633,stroke:#f85149,color:#fff
+    style SUBMIT fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style CLEAN fill:#1f6feb,stroke:#58a6ff,color:#fff
+    style RESOLVE fill:#238636,stroke:#3fb950,color:#fff
+  </div>
+
   <p>
-    Both the Python worker agent and the Electron desktop worker follow the same execution
-    pattern:
+    Both the Python worker agent and the Electron desktop worker follow this same execution
+    pattern. The key steps:
   </p>
   <ol>
     <li><strong>Resolve script:</strong> Locate the training script from <code>code_package_ref</code>
@@ -245,34 +289,18 @@ proc = subprocess.run(
     to simulated metrics with a clear warning.</li>
     <li><strong>Write config:</strong> Serialise the task's config dict (with injected seed and
     time budget) to a temporary JSON file.</li>
-    <li><strong>Spawn subprocess:</strong> Execute <code>python train_char_lm.py --config-file tmp.json</code>
-    as a child process with stdout/stderr capture.</li>
-    <li><strong>Enforce timeout:</strong> Hard kill at <code>time_budget + 15s</code> via
-    <code>asyncio.wait_for</code> (Python) or <code>setTimeout</code> (Node.js).</li>
+    <li><strong>Spawn subprocess:</strong> Execute the training script as a child process
+    with stdout/stderr capture.</li>
+    <li><strong>Enforce timeout:</strong> Hard kill at <code>time_budget + 15s</code>.</li>
     <li><strong>Parse result:</strong> Read the last line of stdout as JSON metrics.</li>
-    <li><strong>Clean up:</strong> Delete the temp config file in a <code>finally</code> block.</li>
+    <li><strong>Clean up:</strong> Delete the temp config file.</li>
   </ol>
-
-  <h3>Graceful Degradation</h3>
-  <p>
-    If PyTorch is not available on a worker, the system degrades gracefully:
-  </p>
-  <ul>
-    <li>The worker logs a warning and switches to simulated metrics (seeded PRNG).</li>
-    <li>The UI shows an <span class="badge badge-amber">Simulated</span> badge instead of
-    <span class="badge badge-green">Real ML Training</span>.</li>
-    <li>Simulated results are clearly marked in the task submission so the orchestrator
-    can distinguish them from real results.</li>
-  </ul>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <h2>Verified Results</h2>
-  <p>
-    The training pipeline has been validated end-to-end:
-  </p>
   <table>
     <thead>
       <tr>
@@ -298,9 +326,9 @@ proc = subprocess.run(
         <td>Script exits within budget, never exceeds hard deadline</td>
       </tr>
       <tr>
-        <td>Different configs → different results</td>
+        <td>Different configs produce different results</td>
         <td><span class="badge badge-green">Passed</span></td>
-        <td>10-task campaign: val_bpb range 3.57–4.89, std 0.56</td>
+        <td>10-task campaign: val_bpb range 3.57-4.89, std 0.56</td>
       </tr>
       <tr>
         <td>GPU detection (NVIDIA)</td>
@@ -319,4 +347,9 @@ proc = subprocess.run(
       </tr>
     </tbody>
   </table>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-task-detail.png' | relative_url }}" alt="Task detail showing completed training run with real val_bpb metric and hyperparameter config">
+    <div class="screenshot-caption">Task detail: completed training run showing real val_bpb metric, hyperparameter config, and resource requirements</div>
+  </div>
 </div>

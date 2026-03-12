@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Desktop Worker — XeeNet
+title: Desktop Worker - XeeNet
 ---
 
 <div class="page-header">
   <h1>Desktop Worker Application</h1>
   <p class="lead">
     A self-contained Electron app that turns any Windows PC into a distributed
-    ML training node — no Python, no PyTorch, no setup required.
+    ML training node. No Python, no PyTorch, no setup required.
   </p>
 </div>
 
@@ -26,23 +26,20 @@ title: Desktop Worker — XeeNet
     <li>Extracts it to <code>%APPDATA%/xeenet-worker/python/</code></li>
     <li>Enables pip (edits the <code>._pth</code> file, runs <code>get-pip.py</code>)</li>
     <li>Detects whether an NVIDIA GPU is present (via <code>nvidia-smi</code>)</li>
-    <li>Installs PyTorch — CUDA-enabled (~2.5 GB) if GPU detected, CPU-only (~160 MB) otherwise</li>
+    <li>Installs PyTorch: CUDA-enabled (~2.5 GB) if GPU detected, CPU-only (~160 MB) otherwise</li>
     <li>Writes a completion marker and starts accepting tasks</li>
   </ol>
   <p>
-    The entire ML environment lives inside the app's data directory. It doesn't touch the
-    system Python, doesn't modify PATH, and can be cleanly uninstalled by deleting the folder.
+    The entire ML environment lives inside the app's data directory. It does not touch the
+    system Python, does not modify PATH, and can be cleanly uninstalled by deleting the folder.
   </p>
 
   <div class="callout">
     <div class="callout-title">GPU Auto-Detection</div>
     <p>
       The setup process queries <code>nvidia-smi --query-gpu=name --format=csv,noheader</code>.
-      If an NVIDIA GPU responds, the app installs PyTorch with CUDA 12.4 support from
-      <code>download.pytorch.org/whl/cu124</code>. If no GPU is found (or if the user has
-      disabled GPU in settings), it installs the lightweight CPU-only build. The user's
-      GPU preference in the settings panel is respected — even with an NVIDIA GPU present,
-      the user can opt for CPU-only training.
+      If an NVIDIA GPU responds, the app installs PyTorch with CUDA 12.4 support.
+      If no GPU is found (or if the user has disabled GPU in settings), it installs the lightweight CPU-only build.
     </p>
   </div>
 </div>
@@ -57,51 +54,48 @@ title: Desktop Worker — XeeNet
     IPC bridge.
   </p>
 
-  <h3>Process Model</h3>
-  <div class="diagram">
-  ┌─────────────────────────────────────────────────────────┐
-  │                    Main Process                          │
-  │                                                         │
-  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
-  │  │ Worker       │  │ Python       │  │ Hardware     │  │
-  │  │ Service      │  │ Resolver     │  │ Detection    │  │
-  │  │              │  │              │  │              │  │
-  │  │ • Poll loop  │  │ • Find Python│  │ • CPU cores  │  │
-  │  │ • Subprocess │  │ • Check torch│  │ • RAM        │  │
-  │  │ • Timeouts   │  │ • Auto-setup │  │ • GPU/VRAM   │  │
-  │  └──────────────┘  └──────────────┘  └──────────────┘  │
-  │                                                         │
-  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
-  │  │ IPC          │  │ Store        │  │ System Tray  │  │
-  │  │ Handlers     │  │ (electron-   │  │              │  │
-  │  │              │  │  store)      │  │ • Status icon│  │
-  │  │ 10 channels  │  │              │  │ • Quick menu │  │
-  │  └──────────────┘  └──────────────┘  └──────────────┘  │
-  │                          │                              │
-  │  ┌──────────────┐        │  ┌───────────────────────┐   │
-  │  │ Python       │        │  │ File Logger           │   │
-  │  │ Setup        │        │  │                       │   │
-  │  │              │        │  │ • Rotating log files  │   │
-  │  │ • Download   │        │  │ • %APPDATA%/logs/     │   │
-  │  │ • Extract    │        │  └───────────────────────┘   │
-  │  │ • Install    │        │                              │
-  │  └──────────────┘        │                              │
-  └──────────────────────────┼──────────────────────────────┘
-                             │ contextBridge (IPC)
-  ┌──────────────────────────┼──────────────────────────────┐
-  │              Renderer Process                           │
-  │                          │                              │
-  │  window.xeenet = {       │                              │
-  │    worker.start()        │     ┌────────────────────┐   │
-  │    worker.stop()         │     │    Dark Theme UI   │   │
-  │    worker.onStateUpdate()│────▶│                    │   │
-  │    config.get/set()      │     │  • Server URL      │   │
-  │    hardware.detect()     │     │  • Resource sliders│   │
-  │    python.check()        │     │  • Log panel       │   │
-  │    python.setup()        │     │  • Status badges   │   │
-  │    connection.test()     │     └────────────────────┘   │
-  │  }                                                      │
-  └─────────────────────────────────────────────────────────┘
+  <div class="mermaid">
+  graph TB
+    subgraph Main["Main Process"]
+      WS["Worker Service<br/>Poll loop, subprocess, timeouts"]
+      PR["Python Resolver<br/>Find Python, check PyTorch"]
+      PS["Python Setup<br/>Auto-download, install"]
+      HD["Hardware Detection<br/>CPU, RAM, GPU profiling"]
+      IPC["IPC Handlers<br/>10 typed channels"]
+      STORE["Electron Store<br/>Persistent config"]
+      TRAY["System Tray<br/>Status icon, quick menu"]
+      LOG["File Logger<br/>Rotating log files"]
+    end
+
+    subgraph Bridge["Context Bridge (IPC)"]
+      API["window.xeenet API"]
+    end
+
+    subgraph Renderer["Renderer Process"]
+      UI["Dark Theme UI<br/>Server URL, resource sliders<br/>Log panel, status badges"]
+    end
+
+    WS --> PR
+    WS --> PS
+    WS --> HD
+    IPC --> WS
+    IPC --> STORE
+    IPC --> API
+    API --> UI
+
+    style Main fill:#1a1e2e,stroke:#3fb950,stroke-width:2px,color:#e6edf3
+    style Bridge fill:#1a1e2e,stroke:#d29922,stroke-width:2px,color:#e6edf3
+    style Renderer fill:#1a1e2e,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
+    style WS fill:#238636,stroke:#3fb950,color:#fff
+    style PR fill:#238636,stroke:#3fb950,color:#fff
+    style PS fill:#238636,stroke:#3fb950,color:#fff
+    style HD fill:#238636,stroke:#3fb950,color:#fff
+    style IPC fill:#238636,stroke:#3fb950,color:#fff
+    style STORE fill:#238636,stroke:#3fb950,color:#fff
+    style TRAY fill:#238636,stroke:#3fb950,color:#fff
+    style LOG fill:#238636,stroke:#3fb950,color:#fff
+    style API fill:#b08800,stroke:#d29922,color:#fff
+    style UI fill:#1f6feb,stroke:#58a6ff,color:#fff
   </div>
 
   <h3>IPC Channels</h3>
@@ -121,166 +115,134 @@ title: Desktop Worker — XeeNet
     <tbody>
       <tr>
         <td><code>worker:start</code></td>
-        <td>Renderer → Main</td>
+        <td>Renderer to Main</td>
         <td>Start the worker loop with a server URL</td>
       </tr>
       <tr>
         <td><code>worker:stop</code></td>
-        <td>Renderer → Main</td>
+        <td>Renderer to Main</td>
         <td>Gracefully stop the worker</td>
       </tr>
       <tr>
         <td><code>worker:state-update</code></td>
-        <td>Main → Renderer</td>
+        <td>Main to Renderer</td>
         <td>Full application state broadcast</td>
       </tr>
       <tr>
         <td><code>worker:log</code></td>
-        <td>Main → Renderer</td>
+        <td>Main to Renderer</td>
         <td>Log entry for the UI log panel</td>
       </tr>
       <tr>
-        <td><code>config:get</code> / <code>config:set</code></td>
-        <td>Renderer → Main</td>
+        <td><code>config:get / config:set</code></td>
+        <td>Renderer to Main</td>
         <td>Read/write persistent configuration</td>
       </tr>
       <tr>
         <td><code>hardware:detect</code></td>
-        <td>Renderer → Main</td>
+        <td>Renderer to Main</td>
         <td>Trigger hardware profiling</td>
       </tr>
       <tr>
         <td><code>python:check</code></td>
-        <td>Renderer → Main</td>
+        <td>Renderer to Main</td>
         <td>Check Python + PyTorch availability</td>
       </tr>
       <tr>
         <td><code>python:setup</code></td>
-        <td>Renderer → Main</td>
+        <td>Renderer to Main</td>
         <td>Trigger ML environment auto-setup</td>
       </tr>
       <tr>
         <td><code>python:setup-progress</code></td>
-        <td>Main → Renderer</td>
+        <td>Main to Renderer</td>
         <td>Setup progress updates (phase, detail, percent)</td>
-      </tr>
-      <tr>
-        <td><code>app:quit</code> / <code>app:minimise-to-tray</code></td>
-        <td>Renderer → Main</td>
-        <td>Application lifecycle control</td>
       </tr>
     </tbody>
   </table>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-  <h2>Task Execution</h2>
-  <p>
-    When a task arrives, the worker service follows this flow:
-  </p>
-
-  <h3>1. Python Resolution</h3>
-  <p>
-    The <code>python-resolver</code> module searches for a usable Python installation
-    in priority order:
-  </p>
-  <ol>
-    <li><strong>Embedded Python</strong> — the auto-downloaded distribution in <code>%APPDATA%/xeenet-worker/python/</code></li>
-    <li><strong>User-configured path</strong> — from the <code>pythonPath</code> setting</li>
-    <li><strong><code>python3</code> on PATH</strong></li>
-    <li><strong><code>python</code> on PATH</strong></li>
-    <li><strong>Common Windows locations</strong> — <code>%LOCALAPPDATA%\Programs\Python\...</code>, <code>C:\Python3*\...</code></li>
-  </ol>
-  <p>
-    Once found, the resolver runs a quick probe (<code>python -c "import torch; ..."</code>)
-    to determine PyTorch availability and CUDA support. The result is cached for the session.
-  </p>
-
-  <h3>2. Script Resolution</h3>
-  <p>
-    The training script is bundled inside the portable exe via electron-builder's
-    <code>extraResources</code>. At runtime, <code>resolveScript()</code> checks:
-  </p>
-  <ol>
-    <li><code>process.resourcesPath/experiments/</code> — packaged app</li>
-    <li><code>process.cwd()/experiments/</code> — development mode</li>
-    <li><code>__dirname/../../experiments/</code> — development mode fallback</li>
-  </ol>
-
-  <h3>3. Subprocess Execution</h3>
-  <p>
-    The worker spawns a child process with the embedded Python, passing the config
-    via a temporary JSON file. Stdout is collected for the metrics JSON; stderr is
-    logged for debugging. A hard timeout kills the process if the script doesn't
-    exit within the grace period.
-  </p>
-
-  <h3>4. Execution Mode Indicator</h3>
-  <p>
-    The UI displays an execution mode badge:
-  </p>
-  <ul>
-    <li><span class="badge badge-green">Real ML Training</span> — PyTorch available, running actual training</li>
-    <li><span class="badge badge-amber">Simulated</span> — PyTorch unavailable, using seeded PRNG metrics</li>
-  </ul>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <h2>User Interface</h2>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/worker-connected.png' | relative_url }}" alt="XeeNet Worker connected and ready, showing Real ML Training badge, hardware detection, and activity log">
+    <div class="screenshot-caption">Worker connected to server: Real ML Training badge, NVIDIA RTX 3080 detected, CUDA-enabled PyTorch ready</div>
+  </div>
+
   <p>
     The desktop worker features a dark-themed UI with:
   </p>
   <ul>
     <li><strong>Server URL configuration</strong> with connection testing (latency display)</li>
-    <li><strong>Resource allocation sliders</strong> — CPU cores, RAM limit, GPU toggle</li>
+    <li><strong>Resource allocation sliders</strong> for CPU cores, RAM limit, and GPU toggle</li>
     <li><strong>Real-time log panel</strong> with colour-coded severity levels</li>
-    <li><strong>Worker state display</strong> — Idle, Polling, Working, Error</li>
-    <li><strong>Task information panel</strong> — shows current task ID, hyperparameters, and progress</li>
-    <li><strong>Execution mode badge</strong> — Real ML Training vs Simulated</li>
-    <li><strong>System tray integration</strong> — minimise to tray, status icon updates</li>
+    <li><strong>Worker state display:</strong> Idle, Polling, Working, Error</li>
+    <li><strong>Task information panel</strong> showing current task ID, hyperparameters, and progress</li>
+    <li><strong>Execution mode badge:</strong> Real ML Training vs Simulated</li>
+    <li><strong>System tray integration</strong> for minimise-to-tray and status icon updates</li>
   </ul>
 
-  <h3>Resource Controls</h3>
+  <div class="screenshot">
+    <img src="{{ '/assets/images/worker-training.png' | relative_url }}" alt="XeeNet Worker actively running a training task, showing task details and hyperparameter config">
+    <div class="screenshot-caption">Worker executing a real training task: hyperparameter config visible, spawning train_char_lm.py subprocess</div>
+  </div>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/worker-settings.png' | relative_url }}" alt="XeeNet Worker settings panel with CPU cores, RAM, and GPU allocation controls">
+    <div class="screenshot-caption">Settings panel: users control CPU cores, RAM, and GPU allocation donated to the network</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h2>Task Execution</h2>
+
+  <h3>Python Resolution</h3>
   <p>
-    Users can limit the resources available to training tasks:
+    The <code>python-resolver</code> module searches for a usable Python installation
+    in priority order:
   </p>
-  <table>
-    <thead>
-      <tr>
-        <th>Control</th>
-        <th>Effect</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>CPU Cores Limit</td>
-        <td>Caps the number of cores available to training subprocesses</td>
-      </tr>
-      <tr>
-        <td>RAM Limit (GB)</td>
-        <td>Maximum memory allocation for the worker</td>
-      </tr>
-      <tr>
-        <td>GPU Enabled</td>
-        <td>Toggle GPU usage on/off. When disabled, forces CPU-only PyTorch even if GPU available</td>
-      </tr>
-    </tbody>
-  </table>
+  <ol>
+    <li><strong>Embedded Python</strong>: the auto-downloaded distribution in <code>%APPDATA%/xeenet-worker/python/</code></li>
+    <li><strong>User-configured path</strong>: from the <code>pythonPath</code> setting</li>
+    <li><strong><code>python3</code> on PATH</strong></li>
+    <li><strong><code>python</code> on PATH</strong></li>
+    <li><strong>Common Windows locations</strong>: <code>%LOCALAPPDATA%\Programs\Python\...</code>, <code>C:\Python3*\...</code></li>
+  </ol>
+  <p>
+    Once found, the resolver runs a quick probe (<code>python -c "import torch; ..."</code>)
+    to determine PyTorch availability and CUDA support. The result is cached for the session.
+  </p>
+
+  <h3>Script Resolution</h3>
+  <p>
+    The training script is bundled inside the portable exe via electron-builder's
+    <code>extraResources</code>. At runtime, <code>resolveScript()</code> checks:
+  </p>
+  <ol>
+    <li><code>process.resourcesPath/experiments/</code> (packaged app)</li>
+    <li><code>process.cwd()/experiments/</code> (development mode)</li>
+    <li><code>__dirname/../../experiments/</code> (development mode fallback)</li>
+  </ol>
+
+  <h3>Execution Mode Indicator</h3>
+  <p>
+    The UI displays an execution mode badge:
+  </p>
+  <ul>
+    <li><span class="badge badge-green">Real ML Training</span> PyTorch available, running actual training</li>
+    <li><span class="badge badge-amber">Simulated</span> PyTorch unavailable, using seeded PRNG metrics</li>
+  </ul>
 </div>
 
 <div class="divider"></div>
 
 <div class="section">
   <h2>Distribution</h2>
-  <p>
-    The desktop worker is packaged as a portable Windows executable using electron-builder.
-    No installation required — download, run, and contribute compute. The training script
-    is bundled inside the exe as an extra resource.
-  </p>
   <table>
     <thead>
       <tr>

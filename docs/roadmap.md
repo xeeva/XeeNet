@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Roadmap — XeeNet
+title: Roadmap - XeeNet
 ---
 
 <div class="page-header">
   <h1>Roadmap</h1>
   <p class="lead">
-    Where XeeNet is today and where it's headed — from local prototype
+    Where XeeNet is today and where it is headed: from local prototype
     to global-scale distributed autoresearch.
   </p>
 </div>
@@ -94,8 +94,8 @@ title: Roadmap — XeeNet
       <h3>Bayesian Optimisation</h3>
       <p>
         Replace random search with Bayesian optimisation. Use completed task results to
-        inform the next batch of hyperparameter configurations. The orchestrator should
-        focus exploration on promising regions of the search space.
+        inform the next batch of hyperparameter configurations. Focus exploration on
+        promising regions of the search space.
       </p>
     </div>
     <div class="card">
@@ -113,7 +113,7 @@ title: Roadmap — XeeNet
       <p>
         Workers are semi-trusted. Implement result verification: randomly re-run tasks on
         trusted workers, compare metrics within tolerance, and flag anomalies. Critical for
-        the credits economy — no fake results, no free credits.
+        the credits economy.
       </p>
     </div>
     <div class="card">
@@ -136,9 +136,9 @@ title: Roadmap — XeeNet
   <h3>Intelligent Orchestration</h3>
   <p>
     The orchestrator should learn from the global results database. When a new campaign
-    starts, it should consult <code>LessonsLearned.md</code> and historical results to
-    make informed decisions about which hyperparameter regions to explore, which
-    architectures to prioritise, and how to allocate compute across tasks.
+    starts, it should consult historical results to make informed decisions about which
+    hyperparameter regions to explore, which architectures to prioritise, and how to
+    allocate compute across tasks.
   </p>
 
   <h3>Federated Research Programmes</h3>
@@ -154,7 +154,7 @@ title: Roadmap — XeeNet
     Full implementation of the credits economy: workers earn credits for completed tasks,
     researchers spend credits to submit campaigns. The economics agent manages pricing
     based on supply/demand, detects fraud, and ensures fair distribution. Credits should
-    reflect actual compute contributed — GPU time is worth more than CPU time.
+    reflect actual compute contributed: GPU time is worth more than CPU time.
   </p>
 
   <h3>Agent-Driven Code Modification</h3>
@@ -162,7 +162,7 @@ title: Roadmap — XeeNet
     Following the autoresearch pattern more deeply: agents should be able to propose
     modifications to the training script itself. Given a series of experiment results,
     the orchestrator could suggest architectural changes, new regularisation techniques,
-    or training procedure modifications — and generate the code to test them.
+    or training procedure modifications and generate the code to test them.
   </p>
 </div>
 
@@ -181,40 +181,15 @@ title: Roadmap — XeeNet
     <li>The credits economy incentivises sustained participation</li>
     <li>Results are publicly available, advancing open ML research</li>
   </ul>
-  <p>
-    XeeNet is designed with this scale in mind from the start. The autoresearch contract
-    (fixed budget, self-contained script, single metric) makes experiments composable
-    and distributable. The agent architecture makes orchestration intelligent. The
-    zero-setup desktop worker makes participation frictionless.
-  </p>
 
   <div class="callout">
     <div class="callout-title">The SETI@home Parallel</div>
     <p>
-      SETI@home proved that volunteers will donate compute for science — at its peak,
+      SETI@home proved that volunteers will donate compute for science. At its peak,
       it had over 5 million participants providing 27 PetaFLOPS. XeeNet applies the
       same model to ML research: instead of searching for extraterrestrial signals,
-      we're searching for optimal neural network architectures. The compute requirements
+      we search for optimal neural network architectures. The compute requirements
       are similar; the scientific payoff is immediate and measurable.
     </p>
   </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-  <h2>Contributing</h2>
-  <p>
-    XeeNet is open source. We welcome contributions in any area:
-  </p>
-  <ul>
-    <li><strong>New experiment templates</strong> — self-contained training scripts following the autoresearch contract</li>
-    <li><strong>Platform improvements</strong> — dashboard features, API enhancements, worker capabilities</li>
-    <li><strong>Testing and validation</strong> — running the desktop worker on diverse hardware configurations</li>
-    <li><strong>Documentation</strong> — tutorials, guides, and architectural write-ups</li>
-    <li><strong>Research ideas</strong> — what experiments should the grid run?</li>
-  </ul>
-  <p>
-    See the <a href="https://github.com/xeeva/XeeNet">GitHub repository</a> to get started.
-  </p>
 </div>

@@ -1,38 +1,14 @@
 ---
 layout: default
-title: XeeNet — Distributed AI Research at Scale
+title: XeeNet - Distributed AI Research at Scale
 ---
 
 <div class="hero">
   <h1>XeeNet</h1>
   <p class="subtitle">
-    A distributed platform for autonomous machine learning research.
-    Donate your spare compute — CPU, GPU, or NPU — to run real ML experiments
-    at global scale. Inspired by SETI@home and Karpathy's autoresearch.
-  </p>
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <span class="number">~8,000</span>
-      <span class="label">Lines of Code</span>
-    </div>
-    <div class="hero-stat">
-      <span class="number">4</span>
-      <span class="label">Agent Families</span>
-    </div>
-    <div class="hero-stat">
-      <span class="number">110</span>
-      <span class="label">Passing Tests</span>
-    </div>
-    <div class="hero-stat">
-      <span class="number">0</span>
-      <span class="label">External Dependencies*</span>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <p style="text-align: center; font-size: 0.85rem; color: var(--colour-text-muted);">
-    *The desktop worker auto-downloads Python + PyTorch on first run. Users need nothing pre-installed.
+    An open platform for distributed machine learning research.
+    Donate your spare compute to run real ML experiments at global scale.
+    Inspired by SETI@home and Karpathy's autoresearch.
   </p>
 </div>
 
@@ -41,28 +17,29 @@ title: XeeNet — Distributed AI Research at Scale
 <div class="section">
   <h2>The Problem</h2>
   <p>
-    Andrej Karpathy's <strong>autoresearch</strong> showed that ML experiments can be fully autonomous —
+    Andrej Karpathy's <strong>autoresearch</strong> proved that ML experiments can be fully autonomous:
     a script runs a training loop for a fixed compute budget, reports a single comparable metric
-    (<code>val_bpb</code>), and an agent decides what to try next. The bottleneck is compute:
-    one machine can only run so many experiments.
+    (<code>val_bpb</code>), and an agent decides what to try next. The bottleneck is compute.
+    One machine can only run so many experiments.
   </p>
   <p>
     XeeNet removes that bottleneck. Instead of one machine, experiments run across a global
-    grid of volunteer devices — like SETI@home, but for ML research. Researchers submit
-    experiment campaigns, and the platform distributes bounded training tasks to workers worldwide.
+    grid of volunteer devices. Researchers submit experiment campaigns, and the platform distributes
+    bounded training tasks to workers worldwide. Every device with a CPU or GPU becomes a
+    research node.
   </p>
 </div>
 
 <div class="divider"></div>
 
-<div class="section section-wide">
+<div class="section">
   <h2>How It Works</h2>
   <div class="card-grid">
     <div class="card">
       <span class="card-icon">&#128209;</span>
       <h3>Researchers Submit Briefs</h3>
       <p>
-        A research brief describes the experiment campaign — the hypothesis, search space,
+        A research brief describes the experiment campaign: the hypothesis, search space,
         and compute budget. The orchestrator decomposes it into bounded tasks with specific
         hyperparameter configurations.
       </p>
@@ -73,16 +50,15 @@ title: XeeNet — Distributed AI Research at Scale
       <p>
         Each task is a self-contained training run: a Python script, a JSON config
         (learning rate, architecture, schedule), a time budget, and a seed for
-        reproducibility. Tasks are queued and matched to available workers.
+        reproducibility.
       </p>
     </div>
     <div class="card">
       <span class="card-icon">&#128187;</span>
       <h3>Workers Run Real Training</h3>
       <p>
-        Desktop workers (Windows/Mac/Linux) poll for tasks and execute them in isolated
-        subprocesses. The worker auto-downloads Python and PyTorch on first run — no
-        setup required from the user.
+        Desktop workers poll for tasks and execute them in isolated subprocesses.
+        The worker auto-downloads Python and PyTorch on first run. No setup required.
       </p>
     </div>
     <div class="card">
@@ -90,8 +66,7 @@ title: XeeNet — Distributed AI Research at Scale
       <h3>Results Flow to the Dashboard</h3>
       <p>
         Each completed task reports metrics (val_bpb, train_loss, steps, wall time)
-        via a single JSON line. The dashboard aggregates results across the campaign,
-        identifying the best configurations.
+        via a single JSON line. The dashboard aggregates results across the campaign.
       </p>
     </div>
   </div>
@@ -133,7 +108,7 @@ title: XeeNet — Distributed AI Research at Scale
 <div class="section">
   <h2>Real Training, Not Simulation</h2>
   <p>
-    XeeNet runs <strong>actual PyTorch training</strong> — not simulated metrics. The default
+    XeeNet runs <strong>actual PyTorch training</strong>, not simulated metrics. The default
     experiment is a character-level transformer trained on TinyShakespeare, producing a
     real <code>val_bpb</code> (validation bits-per-byte) metric that measures genuine model quality.
   </p>
@@ -173,15 +148,16 @@ title: XeeNet — Distributed AI Research at Scale
       </tr>
     </tbody>
   </table>
-  <p>
-    Different hyperparameter configurations produce meaningfully different results — confirming
-    the pipeline is capturing real signal, not noise.
-  </p>
+
+  <div class="screenshot">
+    <img src="{{ '/assets/images/dashboard-brief-detail.png' | relative_url }}" alt="Brief detail showing completed campaign results with best val_bpb and task breakdown">
+    <div class="screenshot-caption">Campaign results: 10/10 tasks completed, best val_bpb 3.5705, showing hyperparameter configs and per-task metrics</div>
+  </div>
 </div>
 
 <div class="divider"></div>
 
-<div class="section section-wide">
+<div class="section">
   <h2>Key Design Principles</h2>
   <div class="card-grid">
     <div class="card">
@@ -190,16 +166,16 @@ title: XeeNet — Distributed AI Research at Scale
       <p>
         The Electron desktop app auto-downloads an embedded Python 3.12 distribution and
         installs PyTorch on first run. Users just install the app and click "Start".
-        GPU detection is automatic — NVIDIA GPUs get CUDA-enabled PyTorch.
+        GPU detection is automatic.
       </p>
     </div>
     <div class="card">
       <span class="card-icon">&#128256;</span>
       <h3>Reproducible by Default</h3>
       <p>
-        Every task carries a seed. The config generator uses <code>random.Random(seed)</code>
-        for deterministic sampling. Training scripts set PyTorch seeds. Identical configs
-        on identical hardware produce matching results.
+        Every task carries a seed. The config generator uses deterministic sampling.
+        Training scripts set PyTorch seeds. Identical configs on identical hardware
+        produce matching results.
       </p>
     </div>
     <div class="card">
@@ -207,8 +183,7 @@ title: XeeNet — Distributed AI Research at Scale
       <h3>Graceful Degradation</h3>
       <p>
         If PyTorch is unavailable, workers fall back to simulated metrics with a clear
-        UI indicator. The platform never blocks on missing dependencies — it adapts
-        and reports honestly.
+        UI indicator. The platform never blocks on missing dependencies.
       </p>
     </div>
     <div class="card">
@@ -216,8 +191,7 @@ title: XeeNet — Distributed AI Research at Scale
       <h3>Credits Economy</h3>
       <p>
         Workers earn credits for completed tasks. Researchers spend credits to submit
-        campaigns. The economics agent handles metering, accounting, and fraud detection
-        — keeping the marketplace fair.
+        campaigns. The economics agent handles metering, accounting, and fraud detection.
       </p>
     </div>
   </div>
@@ -273,20 +247,4 @@ title: XeeNet — Distributed AI Research at Scale
       </tr>
     </tbody>
   </table>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-  <h2>Get Involved</h2>
-  <p>
-    XeeNet is in active development. The core pipeline — from research brief to real training
-    results — is fully functional. We're looking for contributors, early testers, and researchers
-    who want to run distributed ML experiments.
-  </p>
-  <p>
-    <a href="https://github.com/xeeva/XeeNet">View the source on GitHub</a> or read the
-    <a href="{{ '/architecture' | relative_url }}">architecture deep-dive</a> to understand
-    how the system fits together.
-  </p>
 </div>
