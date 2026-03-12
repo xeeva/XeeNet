@@ -180,10 +180,10 @@ title: Training Pipeline - XeeNet
     T2 -.- M2
     T3 -.- M3
 
-    style T1 fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
-    style T2 fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style T3 fill:#6b21a8,stroke:#a855f7,stroke-width:2px,color:#fff
-    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
+    style T1 fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
+    style T2 fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style T3 fill:#6b21a8,stroke:#a855f7,stroke-width:2px,color:#000
+    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#000
     style M1 fill:#0d1117,stroke:#60a5fa,stroke-width:2px,color:#60a5fa
     style M2 fill:#0d1117,stroke:#facc15,stroke-width:2px,color:#facc15
     style M3 fill:#0d1117,stroke:#f87171,stroke-width:2px,color:#f87171
@@ -257,19 +257,19 @@ proc = subprocess.run(
     ERROR --> SUBMIT
     SUBMIT --> CLEAN["Clean Up Temp File"]
 
-    style START fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
-    style RESOLVE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style CHECK fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style WRITE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style SPAWN fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style TIMER fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style WAIT fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style PARSE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
-    style ERROR fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#fff
-    style SIM fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
-    style SUBMIT fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
-    style CLEAN fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style START fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
+    style RESOLVE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style CHECK fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style WRITE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style SPAWN fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style TIMER fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style WAIT fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style PARSE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style KILL fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#000
+    style ERROR fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#000
+    style SIM fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
+    style SUBMIT fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
+    style CLEAN fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
   </div>
 
   <p>

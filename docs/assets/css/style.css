@@ -413,9 +413,11 @@ td { color: var(--colour-text-muted); }
 }
 
 /* Bold black text inside diagram nodes */
-.mermaid .nodeLabel { color: #000000 !important; font-weight: 700 !important; }
-.mermaid .node .label { color: #000000 !important; font-weight: 700 !important; }
-.mermaid .node text { fill: #000000 !important; font-weight: 700 !important; }
+.mermaid .nodeLabel { color: #000 !important; font-weight: 700 !important; }
+.mermaid .node .label { color: #000 !important; font-weight: 700 !important; }
+.mermaid .node text { fill: #000 !important; font-weight: 700 !important; }
+.mermaid .node foreignObject div { color: #000 !important; font-weight: 700 !important; }
+.mermaid [class*="node"] span { color: #000 !important; font-weight: 700 !important; }
 /* Edge labels remain light for dark background */
 .mermaid .edgeLabel { color: #e6edf3 !important; }
 .mermaid .edgeLabel .label { color: #e6edf3 !important; background: #0d1117 !important; }

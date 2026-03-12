@@ -79,16 +79,16 @@ title: Desktop Worker - XeeNet
     WS --> LOG
     TRAY --> WS
 
-    style WS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style PR fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style PS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style HD fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style IPC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style STORE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style TRAY fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style LOG fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style API fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style UI fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style WS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style PR fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style PS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style HD fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style IPC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style STORE fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style TRAY fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style LOG fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style API fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style UI fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
   </div>
 
   <h3>IPC Channels</h3>

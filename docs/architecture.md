@@ -41,15 +41,15 @@ title: Architecture - XeeNet
     API -->|"Poll / Submit"| W2
     API -->|"Poll / Submit"| W3
 
-    style WEB fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
-    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style ECON fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style QUEUE fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style DB fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style W1 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
-    style W2 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
-    style W3 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
+    style WEB fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
+    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style ECON fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style QUEUE fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style DB fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style W1 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
+    style W2 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
+    style W3 fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
   </div>
 </div>
 
@@ -167,15 +167,15 @@ title: Architecture - XeeNet
     API -->|"store"| DB["Database"]
     DB -->|"query"| DASH["Dashboard"]
 
-    style BRIEF fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
-    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style TASKS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style WORKER fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
-    style TRAIN fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#fff
-    style METRICS fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#fff
-    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style DB fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#fff
-    style DASH fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#fff
+    style BRIEF fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
+    style ORC fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style TASKS fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style WORKER fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
+    style TRAIN fill:#9333ea,stroke:#c084fc,stroke-width:2px,color:#000
+    style METRICS fill:#ca8a04,stroke:#facc15,stroke-width:2px,color:#000
+    style API fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style DB fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#000
+    style DASH fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#000
   </div>
 
   <h3>Core Schemas</h3>
